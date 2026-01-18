@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Stock Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body class="bg-gray-50">
+    <nav class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Stock Management</h1>
+            <div class="flex items-center space-x-4">
+                <a href="/dashboard.html" class="hover:underline">Dashboard</a>
+                <a href="/parts.html" class="hover:underline">Parts</a>
+                <a href="/alerts.html" class="hover:underline">Alerts</a>
+                <a href="/analytics.html" class="hover:underline">Analytics</a>
+                <span id="userName" class="text-sm"></span>
+                <button onclick="logout()"
+                    class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">Transaction History</h2>
+            <p class="text-gray-600 mt-2">View all stock IN/OUT transactions</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select id="typeFilter" class="px-4 py-2 border rounded-lg">
+                    <option value="">All Types</option>
+                    <option value="IN">Stock IN</option>
+                    <option value="OUT">Stock OUT</option>
+                </select>
+                <input type="date" id="startDate" class="px-4 py-2 border rounded-lg">
+                <input type="date" id="endDate" class="px-4 py-2 border rounded-lg">
+                <button onclick="exportCSV()"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Export CSV</button>
+            </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Date & Time
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Part</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Type</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Quantity</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Machine</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">User</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody" class="divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/transactions.js"></script>
+</body>
+
+</html>

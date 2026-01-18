@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  stock_management:
+    build: .
+    container_name: stock_management_app
+    ports:
+      - "8000:5000"
+    volumes:
+      - ./stock_management.db:/app/stock_management.db
+      - ./static/uploads:/app/static/uploads
+      - ./static/qrcodes:/app/static/qrcodes
+    environment:
+      - FLASK_ENV=production
+    env_file:
+      - .env.example
+    restart: unless-stopped
