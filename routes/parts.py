@@ -102,8 +102,8 @@ def create_part():
     current_user_id = int(get_jwt_identity())
     current_user = User.query.get(current_user_id)
     
-    if not current_user or current_user.role != 'admin':
-        return jsonify({'error': 'Admin access required'}), 403
+    # if not current_user or current_user.role != 'admin':
+    #     return jsonify({'error': 'Admin access required'}), 403
     
     # Get form data
     name = request.form.get('name', '').strip()
@@ -175,8 +175,8 @@ def update_part(part_id):
     current_user_id = int(get_jwt_identity())
     current_user = User.query.get(current_user_id)
     
-    if not current_user or current_user.role != 'admin':
-        return jsonify({'error': 'Admin access required'}), 403
+    # if not current_user or current_user.role != 'admin':
+    #     return jsonify({'error': 'Admin access required'}), 403
     
     part = SparePart.query.get(part_id)
     if not part:
@@ -230,8 +230,8 @@ def delete_part(part_id):
     current_user_id = int(get_jwt_identity())
     current_user = User.query.get(current_user_id)
     
-    if not current_user or current_user.role != 'admin':
-        return jsonify({'error': 'Admin access required'}), 403
+    # if not current_user or current_user.role != 'admin':
+    #     return jsonify({'error': 'Admin access required'}), 403
     
     part = SparePart.query.get(part_id)
     if not part:
