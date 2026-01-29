@@ -1,9 +1,4 @@
-// Protect page
 requireAuth();
-
-// Display user name
-const user = getCurrentUser();
-document.getElementById('userName').textContent = `${user.username} (${user.role})`;
 
 // Load dashboard data
 async function loadDashboardData() {
@@ -47,10 +42,15 @@ async function loadDashboardData() {
         const alertsData = await apiGet('/api/alerts/unread-count');
         const unreadCount = alertsData.unread_count || 0;
 
-        if (unreadCount > 0) {
-            const badge = document.getElementById('alertBadge');
-            badge.textContent = unreadCount;
-            badge.classList.remove('hidden');
+        // Injected in navbar usually, but can be used here too if element exists
+        const alertBadge = document.getElementById('alertBadge');
+        if (alertBadge) {
+            if (unreadCount > 0) {
+                alertBadge.textContent = unreadCount;
+                alertBadge.classList.remove('hidden');
+            } else {
+                alertBadge.classList.add('hidden');
+            }
         }
 
     } catch (error) {
@@ -58,29 +58,51 @@ async function loadDashboardData() {
     }
 }
 
+// Note: userName setting is now handled in ui.js
+
 function displayRecentTransactions(transactions) {
     const tbody = document.getElementById('recentTransactions');
 
     if (transactions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No transactions yet</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-medium tracking-tight">No transactions yet</td></tr>';
         return;
     }
 
     tbody.innerHTML = transactions.map(t => {
-        const date = new Date(t.timestamp).toLocaleString();
-        const typeClass = t.type === 'IN' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800';
+        const dateObj = new Date(t.timestamp);
+        const date = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const time = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        const isIN = t.type === 'IN';
+        const typeClass = isIN
+            ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+            : 'bg-amber-50 text-amber-600 border border-amber-100';
 
         return `
-            <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 text-sm text-gray-600">${date}</td>
-                <td class="px-4 py-3 text-sm font-medium text-gray-800">${t.part_name || 'Unknown'}</td>
-                <td class="px-4 py-3">
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full ${typeClass}">
+            <tr class="hover:bg-slate-50 border-b border-slate-100 transition-colors">
+                <td class="py-4">
+                    <p class="font-bold text-slate-900">${date}</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">${time}</p>
+                </td>
+                <td class="py-4">
+                    <p class="font-bold text-slate-700">${t.part_name || 'Unknown'}</p>
+                </td>
+                <td class="py-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase ${typeClass}">
                         ${t.type}
                     </span>
                 </td>
-                <td class="px-4 py-3 text-sm text-gray-600">${t.quantity}</td>
-                <td class="px-4 py-3 text-sm text-gray-600">${t.user_name || 'Unknown'}</td>
+                <td class="py-4 text-center">
+                    <span class="text-sm font-black ${isIN ? 'text-emerald-600' : 'text-amber-600'}">${isIN ? '+' : '-'}${t.quantity}</span>
+                </td>
+                <td class="py-4">
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center mr-2 text-[10px] text-slate-500 border border-slate-200">
+                            ${(t.user_name || 'U').charAt(0).toUpperCase()}
+                        </div>
+                        <span class="text-xs font-bold text-slate-600">${t.user_name || 'Unknown'}</span>
+                    </div>
+                </td>
             </tr>
         `;
     }).join('');

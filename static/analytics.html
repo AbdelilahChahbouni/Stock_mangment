@@ -4,153 +4,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - Stock Management System</title>
+    <title>Analytics - StockSphere</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/stocksphere.css">
 </head>
 
-<body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Stock Management</h1>
-            <div class="flex items-center space-x-4">
-                <a href="/dashboard.html" class="hover:underline">Dashboard</a>
-                <a href="/parts.html" class="hover:underline">Spare Parts</a>
-                <a href="/transactions.html" class="hover:underline">Transactions</a>
-                <a href="/alerts.html" class="hover:underline">Alerts</a>
-                <a href="/analytics.html" class="font-bold underline">Analytics</a>
-                <span id="userName" class="text-sm"></span>
-                <button onclick="logout()"
-                    class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">Logout</button>
-            </div>
-        </div>
-    </nav>
+<body class="bg-slate-50">
+    <div class="main-content">
+        <!-- Header (Injected by ui.js) -->
+        <script>
+            window.pageTitle = "Analytics";
+        </script>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="mb-8">
-            <h2 class="text-3xl font-bold text-gray-800">Analytics Dashboard</h2>
-            <p class="text-gray-600 mt-2">Insights into your spare parts inventory</p>
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Performance Insights</h2>
+                <p class="text-slate-500 font-medium mt-1">Real-time breakdown of your inventory status</p>
+            </div>
+            <button onclick="window.print()"
+                class="bg-white text-slate-700 border border-slate-200 px-6 py-3 rounded-2xl hover:bg-slate-50 transition font-bold flex items-center shadow-sm no-print">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                Print Report
+            </button>
         </div>
 
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Parts</p>
-                        <p id="totalParts" class="text-3xl font-bold text-purple-600">0</p>
-                    </div>
-                    <div class="bg-purple-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="stat-icon bg-purple-100 text-purple-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Low Stock Items</p>
-                        <p id="lowStockCount" class="text-3xl font-bold text-orange-600">0</p>
-                    </div>
-                    <div class="bg-orange-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                            </path>
-                        </svg>
-                    </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Distinct Parts</p>
+                    <p id="totalParts" class="text-3xl font-extrabold text-slate-900 mt-1">0</p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Quantity</p>
-                        <p id="totalQuantity" class="text-3xl font-bold text-green-600">0</p>
-                    </div>
-                    <div class="bg-green-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                            </path>
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="stat-icon bg-orange-100 text-orange-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </div>
                 </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Low Stock Items</p>
+                    <p id="lowStockCount" class="text-3xl font-extrabold text-orange-600 mt-1">0</p>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Active Alerts</p>
-                        <p id="activeAlerts" class="text-3xl font-bold text-red-600">0</p>
-                    </div>
-                    <div class="bg-red-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                            </path>
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="stat-icon bg-blue-100 text-blue-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </div>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Total Quantity</p>
+                    <p id="totalQuantity" class="text-3xl font-extrabold text-blue-600 mt-1">0</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="stat-icon bg-rose-100 text-rose-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Unseen Alerts</p>
+                    <p id="activeAlerts" class="text-3xl font-extrabold text-rose-600 mt-1">0</p>
                 </div>
             </div>
         </div>
 
         <!-- Charts Row 1 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Stock by Category -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-bold mb-4">Stock by Category</h3>
-                <canvas id="categoryChart"></canvas>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+            <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-900 mb-8 flex items-center">
+                    <span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span>
+                    Stock by Category
+                </h3>
+                <div class="aspect-square max-h-[400px] mx-auto">
+                    <canvas id="categoryChart"></canvas>
+                </div>
             </div>
 
-            <!-- Stock by Location -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-bold mb-4">Stock by Location</h3>
-                <canvas id="locationChart"></canvas>
+            <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-900 mb-8 flex items-center">
+                    <span class="w-2 h-6 bg-emerald-600 rounded-full mr-3"></span>
+                    Stock by Location
+                </h3>
+                <div class="aspect-square max-h-[400px] mx-auto">
+                    <canvas id="locationChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Charts Row 2 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Top Parts by Quantity -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-bold mb-4">Top 10 Parts by Quantity</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 text-center">
+            <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-900 mb-8 text-left flex items-center">
+                    <span class="w-2 h-6 bg-purple-600 rounded-full mr-3"></span>
+                    Top Parts by Quantity
+                </h3>
                 <canvas id="topPartsChart"></canvas>
             </div>
 
-            <!-- Critical Parts -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-bold mb-4">Most Critical Parts</h3>
+            <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-900 mb-8 text-left flex items-center">
+                    <span class="w-2 h-6 bg-rose-600 rounded-full mr-3"></span>
+                    Most Critical Parts
+                </h3>
                 <canvas id="criticalPartsChart"></canvas>
             </div>
         </div>
 
         <!-- Low Stock Table -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-            <div class="p-6 border-b">
-                <h3 class="text-xl font-bold">Low Stock Items</h3>
-            </div>
+        <div class="table-container p-8 mb-10">
+            <h3 class="text-2xl font-bold text-slate-900 mb-8">Low Stock Inventory</h3>
             <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
+                <table class="w-full modern-table">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Part Name</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Category</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Location</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Current</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Minimum</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Deficit</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                            <th class="text-left">Part Name</th>
+                            <th class="text-left">Category</th>
+                            <th class="text-left">Location</th>
+                            <th class="text-left">Current</th>
+                            <th class="text-left">Minimum</th>
+                            <th class="text-left">Deficit</th>
+                            <th class="text-left">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="lowStockTableBody" class="divide-y divide-gray-200">
+                    <tbody id="lowStockTableBody">
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-gray-500">Loading...</td>
+                            <td colspan="7" class="py-10 text-center text-slate-400 font-medium tracking-tight">Loading
+                                critical stock data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -160,7 +170,13 @@
 
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
+    <script src="/js/ui.js"></script>
     <script src="/js/analytics.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            injectNavbar("Analytics");
+        });
+    </script>
 </body>
 
 </html>

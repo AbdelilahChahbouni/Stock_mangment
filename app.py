@@ -23,12 +23,14 @@ def create_app(config_name='default'):
     from routes.transactions import transactions_bp
     from routes.alerts import alerts_bp
     from routes.analytics import analytics_bp
+    from routes.suppliers import suppliers_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(parts_bp)
     app.register_blueprint(transactions_bp)
     app.register_blueprint(alerts_bp)
     app.register_blueprint(analytics_bp)
+    app.register_blueprint(suppliers_bp)
     
     # Serve static files
     @app.route('/uploads/<path:filename>')

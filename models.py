@@ -50,6 +50,9 @@ class SparePart(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
+    # Supplier relationship
+    supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id'), nullable=True, index=True)
+    
     # Relationships
     transactions = db.relationship('Transaction', backref='spare_part', lazy=True, cascade='all, delete-orphan')
     alerts = db.relationship('Alert', backref='spare_part', lazy=True, cascade='all, delete-orphan')
@@ -72,8 +75,37 @@ class SparePart(db.Model):
             'image_url': self.image_url,
             'qr_code_url': self.qr_code_url,
             'is_low_stock': self.is_low_stock,
+            'supplier_id': self.supplier_id,
+            'supplier_name': self.supplier.name if self.supplier else None,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+
+class Supplier(db.Model):
+    """Supplier model"""
+    __tablename__ = 'suppliers'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False, index=True)
+    contact_person = db.Column(db.String(200))
+    email = db.Column(db.String(120), index=True)
+    phone = db.Column(db.String(50))
+    address = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    spare_parts = db.relationship('SparePart', backref='supplier', lazy=True)
+
+    def to_dict(self):
+        """Convert to dictionary"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'contact_person': self.contact_person,
+            'email': self.email,
+            'phone': self.phone,
+            'address': self.address,
+            'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
 class Transaction(db.Model):

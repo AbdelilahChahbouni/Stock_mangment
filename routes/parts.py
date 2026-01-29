@@ -115,6 +115,9 @@ def create_part():
     min_quantity = int(request.form.get('min_quantity', 10))
     location = request.form.get('location', '').strip()
     category = request.form.get('category', '').strip()
+    supplier_id = request.form.get('supplier_id')
+    if supplier_id == '':
+        supplier_id = None
     
     # Handle image upload
     image_url = None
@@ -141,6 +144,7 @@ def create_part():
         min_quantity=min_quantity,
         location=location,
         category=category,
+        supplier_id=supplier_id,
         image_url=image_url
     )
     
@@ -195,6 +199,9 @@ def update_part(part_id):
         part.location = request.form.get('location', '').strip()
     if 'category' in request.form:
         part.category = request.form.get('category', '').strip()
+    if 'supplier_id' in request.form:
+        sid = request.form.get('supplier_id')
+        part.supplier_id = int(sid) if sid and sid != '' else None
     
     # Handle image upload
     if 'image' in request.files:

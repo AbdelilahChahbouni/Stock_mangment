@@ -5,7 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class ApiService {
   // Use 10.0.2.2 for Android Emulator to access localhost
   // Use actual IP for physical device
-  static const String baseUrl = 'http://192.168.1.235:5000/api';
+  //static const String baseUrl = 'https://stock.madrassatech.com/api';
+  static const String baseUrl = 'http://localhost:5000/api';
   final storage = const FlutterSecureStorage();
 
   Future<String?> getToken() async {

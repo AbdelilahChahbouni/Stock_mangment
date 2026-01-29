@@ -1,19 +1,27 @@
 requireAuth();
 
-const user = getCurrentUser();
-document.getElementById('userName').textContent = `${user.username} (${user.role})`;
+// Note: userName setting is now handled in ui.js
 
 // Chart instances
 let categoryChart, locationChart, topPartsChart, criticalPartsChart;
 
-// Color palettes
+// StockSphere Color Palette
 const colors = {
-    primary: ['#9333EA', '#7C3AED', '#6366F1', '#4F46E5', '#4338CA'],
-    success: ['#10B981', '#059669', '#047857', '#065F46', '#064E3B'],
-    warning: ['#F59E0B', '#D97706', '#B45309', '#92400E', '#78350F'],
-    danger: ['#EF4444', '#DC2626', '#B91C1C', '#991B1B', '#7F1D1D'],
-    info: ['#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF', '#1E3A8A']
+    primary: ['#0061FF', '#60EFFF', '#3b82f6', '#1d4ed8', '#1e3a8a'],
+    success: ['#10b981', '#34d399', '#059669', '#047857', '#064e3b'],
+    warning: ['#f59e0b', '#fbbf24', '#d97706', '#b45309', '#78350f'],
+    danger: ['#ef4444', '#f87171', '#dc2626', '#b91c1c', '#7f1d1d'],
+    info: ['#0ea5e9', '#38bdf8', '#0284c7', '#0369a1', '#0c4a6e']
 };
+
+// Global Chart Defaults
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = '#64748b';
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.borderRadius = 12;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+Chart.defaults.elements.bar.borderRadius = 8;
+Chart.defaults.elements.arc.borderWidth = 0;
 
 // Load all analytics data
 async function loadAnalytics() {
@@ -138,28 +146,44 @@ async function loadLowStockAnalysis() {
         }
 
         tbody.innerHTML = data.low_stock_parts.map(part => {
+            const isCritical = part.stock_percentage <= 25;
+            const isVeryLow = part.stock_percentage <= 50;
+
             let statusClass, statusText;
-            if (part.stock_percentage <= 25) {
-                statusClass = 'bg-red-100 text-red-800';
+            if (isCritical) {
+                statusClass = 'bg-rose-50 text-rose-600 border border-rose-100';
                 statusText = 'Critical';
-            } else if (part.stock_percentage <= 50) {
-                statusClass = 'bg-orange-100 text-orange-800';
+            } else if (isVeryLow) {
+                statusClass = 'bg-amber-50 text-amber-600 border border-amber-100';
                 statusText = 'Very Low';
             } else {
-                statusClass = 'bg-yellow-100 text-yellow-800';
+                statusClass = 'bg-blue-50 text-blue-600 border border-blue-100';
                 statusText = 'Low';
             }
 
             return `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 font-medium">${part.name}</td>
-                    <td class="px-4 py-3 text-sm text-gray-600">${part.category || '-'}</td>
-                    <td class="px-4 py-3 text-sm text-gray-600">${part.location || '-'}</td>
-                    <td class="px-4 py-3 text-sm font-semibold">${part.quantity}</td>
-                    <td class="px-4 py-3 text-sm text-gray-600">${part.min_quantity}</td>
-                    <td class="px-4 py-3 text-sm font-semibold text-red-600">${part.deficit}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusClass}">${statusText}</span>
+                <tr class="hover:bg-slate-50 border-b border-slate-100 transition-colors">
+                    <td class="py-4 font-bold text-slate-900">${part.name}</td>
+                    <td class="py-4">
+                        <span class="text-sm font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">${part.category || 'General'}</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="text-sm font-bold text-slate-500">${part.location || '-'}</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="text-lg font-extrabold text-slate-900">${part.quantity}</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="text-sm font-bold text-slate-400">${part.min_quantity}</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="text-sm font-extrabold text-rose-600">${part.deficit}</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-extrabold tracking-wider uppercase ${statusClass}">
+                             <span class="w-1.5 h-1.5 rounded-full mr-2 ${isCritical ? 'bg-rose-500 animate-pulse' : (isVeryLow ? 'bg-amber-500' : 'bg-blue-500')}"></span>
+                            ${statusText}
+                        </span>
                     </td>
                 </tr>
             `;

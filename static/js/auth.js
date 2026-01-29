@@ -15,6 +15,7 @@ async function login(username, password) {
 
         if (response.ok) {
             // Store token and user info
+            console.log('Auth.js: Success, saving user to storage:', data.user);
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -23,7 +24,7 @@ async function login(username, password) {
             return { success: false, error: data.error };
         }
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Error:', error);
         return { success: false, error: 'Connection error' };
     }
 }
@@ -45,6 +46,7 @@ async function signup(username, password) {
 
         if (response.ok) {
             // Store token and user info
+            console.log('Auth.js: Success, saving user to storage:', data.user);
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -53,7 +55,7 @@ async function signup(username, password) {
             return { success: false, error: data.error };
         }
     } catch (error) {
-        console.error('Registration error:', error);
+        console.error('Error:', error);
         return { success: false, error: 'Connection error' };
     }
 }
@@ -62,10 +64,14 @@ async function signup(username, password) {
  * Logout user
  */
 function logout() {
+    console.log('Logging out...');
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
-    window.location.href = '/';
+    window.location.replace('/');
 }
+
+// Ensure logout is globally accessible
+window.logout = logout;
 
 /**
  * Get current user from localStorage
